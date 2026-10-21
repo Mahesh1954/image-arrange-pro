@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageArrange Pro - Image to PDF Converter</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-images"></i>
+                <span>ImageArrange</span>
+                <span class="logo-badge">PRO</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <button class="btn btn-secondary" id="btn-upload-header">
+                <i class="fas fa-plus"></i> Add More
+            </button>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" id="btn-save" title="Save Project">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="icon-btn" id="btn-help" title="Help">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            <button class="btn btn-primary" id="btn-export-header">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTAINER ========== -->
+    <main class="main-container">
+
+        <!-- ========== LEFT PANEL: PREVIEW ========== -->
+        <aside class="preview-panel">
+            
+            <div class="panel-header">
+                <h3><i class="fas fa-eye"></i> Live Preview</h3>
+                <div class="preview-controls">
+                    <button class="icon-btn" id="btn-zoom-out" title="Zoom Out">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <span class="zoom-level" id="zoom-level">100%</span>
+                    <button class="icon-btn" id="btn-zoom-in" title="Zoom In">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="icon-btn" id="btn-fit" title="Fit">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-content" id="preview-content">
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>No Images Yet</h3>
+                    <p>Upload images to see preview here</p>
+                </div>
+
+                <!-- Page Preview -->
+                <div class="page-wrapper" id="page-wrapper" style="display: none;">
+                    <div class="page-preview" id="page-preview">
+                        <div class="page-inner">
+                            <img id="preview-image" src="" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-footer" id="preview-footer" style="display: none;">
+                <div class="page-nav">
+                    <button class="btn-nav" id="btn-first"><i class="fas fa-angle-double-left"></i></button>
+                    <button class="btn-nav" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+                    <span class="page-info">
+                        Page <input type="number" id="page-input" value="1" min="1"> 
+                        of <span id="total-pages">1</span>
+                    </span>
+                    <button class="btn-nav" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+                    <button class="btn-nav" id="btn-last"><i class="fas fa-angle-double-right"></i></button>
+                </div>
+                <div class="page-dots" id="page-dots"></div>
+            </div>
+
+        </aside>
+
+        <!-- ========== RIGHT PANEL: EDITOR ========== -->
+        <section class="editor-panel">
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search images..." id="search-input">
+                    </div>
+                    <select class="sort-select" id="sort-select">
+                        <option value="default">Sort by: Default</option>
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="size-asc">Size (Smallest)</option>
+                        <option value="size-desc">Size (Largest)</option>
+                    </select>
+                </div>
+                <div class="toolbar-right">
+                    <div class="image-counter" id="image-counter">
+                        <i class="fas fa-images"></i>
+                        <span id="image-count-text">0 images</span>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="icon-btn active" id="btn-grid" title="Grid"><i class="fas fa-th-large"></i></button>
+                        <button class="icon-btn" id="btn-list" title="List"><i class="fas fa-list"></i></button>
+                    </div>
+                    <div class="selection-info" id="selection-info" style="display: none;">
+                        <span><span id="selected-count">0</span> selected</span>
+                        <button class="btn-text-danger" id="btn-delete-selected"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Area -->
+            <div class="gallery-area">
+                
+                <!-- Upload Zone -->
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drop images here or click to upload</h3>
+                    <p>Supports unlimited images: JPG, PNG, WEBP, GIF, BMP, TIFF</p>
+                    <p class="upload-hint">Select as many images as you want in one click!</p>
+                    <input type="file" id="file-input" multiple accept="image/*" hidden>
+                    <button class="btn btn-primary btn-large" id="btn-select">
+                        <i class="fas fa-folder-open"></i> Select Images
+                    </button>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div class="gallery-grid" id="gallery-grid" style="display: none;"></div>
+
+                <!-- Load More Button -->
+                <div class="load-more-container" id="load-more-container" style="display: none;">
+                    <button class="btn btn-secondary" id="btn-load-more">
+                        <i class="fas fa-chevron-down"></i> Load More Images
+                    </button>
+                    <span class="load-more-info" id="load-more-info"></span>
+                </div>
+
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <h4><i class="fas fa-cog"></i> Settings</h4>
+                    <button class="icon-btn" id="btn-toggle-settings"><i class="fas fa-chevron-up"></i></button>
+                </div>
+                
+                <div class="settings-body" id="settings-body">
+                    
+                    <!-- Page Settings -->
+                    <div class="settings-group">
+                        <label>Page Size</label>
+                        <select id="page-size">
+                            <option value="a4">A4 (210×297mm)</option>
+                            <option value="letter">Letter (8.5×11in)</option>
+                            <option value="a3">A3 (297×420mm)</option>
+                            <option value="a5">A5 (148×210mm)</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Orientation</label>
+                        <div class="btn-group">
+                            <button class="btn-toggle active" data-orientation="portrait" id="btn-portrait">
+                                <i class="fas fa-portrait"></i> Portrait
+                            </button>
+                            <button class="btn-toggle" data-orientation="landscape" id="btn-landscape">
+                                <i class="fas fa-landscape"></i> Landscape
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Background</label>
+                        <input type="color" id="bg-color" value="#ffffff">
+                    </div>
+
+                    <!-- Margins -->
+                    <div class="settings-group">
+                        <label>Margins (px)</label>
+                        <div class="margin-box">
+                            <div class="margin-row">
+                                <span>Top</span>
+                                <input type="number" id="margin-top" value="15" min="0" max="100">
+                            </div>
+                            <div class="margin-row margin-center">
+                                <div class="margin-side">
+                                    <span>Left</span>
+                                    <input type="number" id="margin-left" value="15" min="0" max="100">
+                                </div>
+                                <div class="margin-page">
+                                    <div class="page-visual" id="margin-visual"></div>
+                                </div>
+                                <div class="margin-side">
+                                    <span>Right</span>
+                                    <input type="number" id="margin-right" value="15" min="0" max="100">
+                                </div>
+                            </div>
+                            <div class="margin-row">
+                                <span>Bottom</span>
+                                <input type="number" id="margin-bottom" value="15" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="margin-presets">
+                            <button class="preset" data-value="0">None</button>
+                            <button class="preset" data-value="5">Narrow</button>
+                            <button class="preset active" data-value="15">Normal</button>
+                            <button class="preset" data-value="25">Wide</button>
+                        </div>
+                    </div>
+
+                    <!-- Image Fit -->
+                    <div class="settings-group">
+                        <label>Image Fit</label>
+                        <div class="fit-options">
+                            <button class="fit-btn active" data-fit="contain">
+                                <div class="fit-icon fit-contain"></div>
+                                <span>Fit</span>
+                            </button>
+                            <button class="fit-btn" data-fit="cover">
+                                <div class="fit-icon fit-cover"></div>
+                                <span>Cover</span>
+                            </button>
+                            <button class="fit-btn" data-fit="fill">
+                                <div class="fit-icon fit-fill"></div>
+                                <span>Fill</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quality -->
+                    <div class="settings-group">
+                        <label>Quality</label>
+                        <select id="quality-select">
+                            <option value="low">Low (72 DPI)</option>
+                            <option value="medium">Medium (150 DPI)</option>
+                            <option value="high" selected>High (300 DPI)</option>
+                        </select>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="settings-group quick-actions">
+                        <button class="btn btn-secondary" id="btn-sort-asc">
+                            <i class="fas fa-sort-alpha-down"></i> Sort A-Z
+                        </button>
+                        <button class="btn btn-secondary" id="btn-sort-desc">
+                            <i class="fas fa-sort-alpha-up"></i> Sort Z-A
+                        </button>
+                        <button class="btn btn-danger" id="btn-clear-all">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ========== UPLOAD PROGRESS MODAL ========== -->
+    <div class="modal" id="upload-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-upload"></i> Uploading Images</h3>
+                <button class="modal-close" id="btn-close-upload"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-progress-info">
+                    <span id="upload-status-text">Preparing...</span>
+                </div>
+                <div class="upload-file-list" id="upload-file-list"></div>
+                <div class="upload-overall-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="upload-progress-fill"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="upload-count-text">0 of 0</span>
+                        <span id="upload-percent-text">0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-upload">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== EXPORT MODAL ========== -->
+    <div class="modal" id="export-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-download"></i> Export Document</h3>
+                <button class="modal-close" id="btn-close-export"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="export-formats">
+                    <label class="format-option">
+                        <input type="radio" name="format" value="pdf" checked>
+                        <div class="format-card">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>PDF</span>
+                        </div>
+                    </label>
+                    <label class="format-option">
+                        <input type="radio" name="format" value="jpg">
+                        <div class="format-card">
+                            <i class="fas fa-file-image"></i>
+                            <span>JPG</span>
+                        </div>
+                    </label>
+                    <label class="format-option">
+                        <input type="radio" name="format" value="png">
+                        <div class="format-card">
+                            <i class="fas fa-file-image"></i>
+                            <span>PNG</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="export-info">
+                    <span><i class="fas fa-images"></i> <span id="export-count">0</span> images</span>
+                    <span><i class="fas fa-file"></i> <span id="export-pages">0</span> pages</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-export">Cancel</button>
+                <button class="btn btn-primary" id="btn-export">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TOAST ========== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/upload.js"></script>
+    <script src="/js/gallery.js"></script>
+    <script src="/js/preview.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/export.js"></script>
+    <script src="/js/app.js"></script>
+
+</body>
+</html>
